@@ -106,7 +106,7 @@ class Grammar:
             ))
             # Y' ::= <epsilong>
             self.productions.add(Production(
-                new_lhs, tuple()
+                new_lhs, (EPSILONG,)
             ))
 
             for production in productionByLhs[lr_production.lhs]:
