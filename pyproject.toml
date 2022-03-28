@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "cs651 compilers"
+version = "0.1.0"
+description = ""
+authors = ["Dakai Tzou <dakaizou@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+sly = "^0.4"
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
