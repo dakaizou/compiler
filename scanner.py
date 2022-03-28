@@ -21,7 +21,6 @@ def scan(input_string) -> Iterator[Terminal]:
         while number_end != end and input_string[number_end].isdigit():
             number_end += 1
         yield Terminal("n")
-        # yield input_string[current_index:number_end]
         current_index = number_end
 
     yield EOF
