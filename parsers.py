@@ -145,11 +145,11 @@ class LR1Parser:
     def parse(self, tokens: Iterable[Terminal]):
         stack: List[Union[int, Symbol]] = [0]
         result = []
-        action = None
         token_iter = iter(tokens)
         sym = next(token_iter)
         while True:
-            action = self.action_table[stack[-1]][sym] # type: ignore
+            state = cast(int, stack[-1])
+            action = self.action_table[state][sym]
             result.append(action)
             if isinstance(action, Shift):
                 stack.append(sym)
@@ -160,7 +160,7 @@ class LR1Parser:
                 production = self.productions[action.target]
                 for _ in range(2*len(production)):
                     stack.pop()
-                next_state = self.goto_table[stack[-1]][production.lhs] # type: ignore
+                next_state = self.goto_table[state][production.lhs]
                 stack.append(production.lhs)
                 stack.append(next_state)
 
