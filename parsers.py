@@ -1,11 +1,8 @@
 import collections
 import dataclasses
-from pprint import PrettyPrinter
 from typing import Dict, FrozenSet, Iterable, List, Set, Tuple, Union, cast
 
-import bnf
 from grammar import EOF, EPSILONG, Grammar, LRProduction, NonTerminal, Production, Symbol, Terminal
-import scanner
 
 
 class LL1Parser:
