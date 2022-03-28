@@ -47,7 +47,8 @@ class LRProduction(Production):
     # period is in front of rhs[cursor]
     cursor: int = 0
 
-    def get_next(self):
+    @property
+    def next(self):
         if self.cursor > len(self):
             return None
         return LRProduction(self.lhs, self.rhs, self.lookahead, self.cursor + 1)
@@ -58,7 +59,8 @@ class LRProduction(Production):
             return None
         return self.rhs[self.cursor]
 
-    def get_beta(self):
+    @property
+    def beta(self):
         return self.rhs[self.cursor + 1:]
 
     @property

@@ -182,7 +182,7 @@ class LR1Parser:
                     continue
 
                 for p in self.production_by_lhs[cast(NonTerminal, sym)]:
-                    for lookahead in self.grammar.first(production.get_beta() + (production.lookahead,)):
+                    for lookahead in self.grammar.first(production.beta + (production.lookahead,)):
                         result.add(LRProduction(p.lhs, p.rhs, lookahead))
 
             if len_before == len(result):
@@ -195,7 +195,7 @@ class LR1Parser:
             if p.current_symbol != symbol:
                 continue
             if not p.is_finished:
-                item = p.get_next()
+                item = p.next
                 next_item_set.add(item)
 
         next_item_set.discard(None)
@@ -209,4 +209,4 @@ class LR1Parser:
         symbols = self.grammar.symbols.union({start})
         self.grammar = Grammar(symbols, start, productions)
         self.kernel = LRProduction(p.lhs, p.rhs, EOF)
-        self.accepting_item = self.kernel.get_next()
+        self.accepting_item = self.kernel.next
