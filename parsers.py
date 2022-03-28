@@ -142,18 +142,19 @@ class LR1Parser:
                 self.symbol_by_state[self.cc[state]].add(sym)
                 # print(f'goto({self.cc[state]}, {sym}) = {self.cc[new_state]}')
 
-    def parse(self, tokens):
+    def parse(self, tokens: Iterable[Terminal]):
         stack: List[Union[int, Symbol]] = [0]
         result = []
         action = None
-        sym = next(tokens)
+        token_iter = iter(tokens)
+        sym = next(token_iter)
         while True:
             action = self.action_table[stack[-1]][sym] # type: ignore
             result.append(action)
             if isinstance(action, Shift):
                 stack.append(sym)
                 stack.append(action.target)
-                sym = next(tokens)
+                sym = next(token_iter)
 
             elif isinstance(action, Reduce):
                 production = self.productions[action.target]
