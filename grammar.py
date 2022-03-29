@@ -28,7 +28,7 @@ class Terminal(Symbol):
     pass
 
 
-EPSILONG: Terminal = Terminal("<EPSILONG>")
+EPSILON: Terminal = Terminal("<EPSILON>")
 EOF: Terminal = Terminal("<EOF>")
 
 
@@ -106,9 +106,9 @@ class Grammar:
             self.productions.add(Production(
                 new_lhs, lr_production.rhs[1:] + (new_lhs, )
             ))
-            # Y' ::= <epsilong>
+            # Y' ::= <epsilon>
             self.productions.add(Production(
-                new_lhs, (EPSILONG,)
+                new_lhs, (EPSILON,)
             ))
 
             for production in productionByLhs[lr_production.lhs]:
@@ -134,10 +134,10 @@ class Grammar:
             if isinstance(symbol, Terminal):
                 self.first_for[symbol.image].add(symbol)
 
-        # if there is epsilong production for NonTerminal X, add epsilong to first(X)
+        # if there is epsilon production for NonTerminal X, add epsilon to first(X)
         for production in self.productions:
-            if len(production) == 1 and production.rhs[0] == EPSILONG:
-                self.first_for[production.lhs.image].add(EPSILONG)
+            if len(production) == 1 and production.rhs[0] == EPSILON:
+                self.first_for[production.lhs.image].add(EPSILON)
 
         while True:
             revised = False
@@ -157,17 +157,18 @@ class Grammar:
 
     def first(self, rhs: Tuple[Symbol, ...]) -> Set[Terminal]:
         if len(rhs) == 0:
-            # return set() or return {EPSILONG}?
             return set()
 
         current_first = self.first_for[rhs[0].image].copy()
+
+        # added for first(Beta a) in LR1Parser.closure
         if isinstance(rhs[0], Terminal):
             current_first.add(rhs[0])
 
         for symbol in rhs[1:]:
-            if EPSILONG not in current_first:
+            if EPSILON not in current_first:
                 break
-            current_first.discard(EPSILONG)
+            current_first.discard(EPSILON)
             current_first |= self.first_for[symbol.image]
         return current_first
 
@@ -189,11 +190,11 @@ class Grammar:
                     len_before = len(self.follow_for[symbol.image])
                     next_first = self.first(production.rhs[i + 1:])
                     # add first(X1X2X3...) to follow(X0)
-                    self.follow_for[symbol.image] |= next_first - {EPSILONG}
+                    self.follow_for[symbol.image] |= next_first - {EPSILON}
 
-                    # if epsilong is in first(X1X2X3...) or if Xi is the last symbol
+                    # if epsilon is in first(X1X2X3...) or if Xi is the last symbol
                     # add follow(Y) to follow(Xi)
-                    if EPSILONG in next_first or i == len(production) - 1:
+                    if EPSILON in next_first or i == len(production) - 1:
                         self.follow_for[symbol.image] |= self.follow_for[production.lhs.image]
 
                     if len_before != len(self.follow_for[symbol.image]):

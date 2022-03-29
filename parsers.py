@@ -2,7 +2,7 @@ import collections
 import dataclasses
 from typing import Dict, FrozenSet, Iterable, List, Set, Tuple, Union, cast
 
-from grammar import EOF, EPSILONG, Grammar, LRProduction, NonTerminal, Production, Symbol, Terminal
+from grammar import EOF, EPSILON, Grammar, LRProduction, NonTerminal, Production, Symbol, Terminal
 
 
 class LL1Parser:
@@ -19,13 +19,13 @@ class LL1Parser:
     def build_parsing_table(self):
         self.parse_table: Dict[NonTerminal, Dict[Terminal, int]] = collections.defaultdict(dict)
         for production in self.grammar.productions:
-            for terminal in self.grammar.first(production.rhs) - {EPSILONG}:
+            for terminal in self.grammar.first(production.rhs) - {EPSILON}:
                 if terminal in self.parse_table[production.lhs]:
                     raise RuntimeError("Ambiguous grammar detected")
                 self.parse_table[production.lhs][terminal] = self.index_by_production[production]
 
             # TODO: slides(194/318) seems to be inside the inner loop?
-            if EPSILONG in self.grammar.first(production.rhs):
+            if EPSILON in self.grammar.first(production.rhs):
                 for terminal in self.grammar.follow_for[production.lhs.image]:
                     if terminal in self.parse_table[production.lhs]:
                         raise RuntimeError("Ambiguous grammar detected")
@@ -54,7 +54,7 @@ class LL1Parser:
                 production = self.productions[self.parse_table[top][sym]]
                 resulting_productions.append(production)
                 for symbol in reversed(production.rhs):
-                    if symbol == EPSILONG:
+                    if symbol == EPSILON:
                         continue
                     stack.append(symbol)
 

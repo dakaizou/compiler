@@ -2,7 +2,7 @@ from typing import Optional, Set, cast
 
 import sly
 
-from grammar import EPSILONG, GrammarJSONEncoder, NonTerminal, Symbol, Terminal, Production, Grammar
+from grammar import EPSILON, GrammarJSONEncoder, NonTerminal, Symbol, Terminal, Production, Grammar
 
 
 class Lexer(sly.Lexer):
@@ -45,8 +45,8 @@ class Parser(sly.Parser):
         if self.start is None:
             self.start = nonterminal
         self.symbols.add(nonterminal)
-        self.symbols.add(EPSILONG)
-        return Production(nonterminal, (EPSILONG,))  # type: ignore
+        self.symbols.add(EPSILON)
+        return Production(nonterminal, (EPSILON,))  # type: ignore
 
     @_('TERMINAL') # type: ignore
     def symbol(self, p): # type: ignore
